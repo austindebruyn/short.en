@@ -46,6 +46,14 @@
 				")";
 		if (!$result = $con->query($sql))	
 			abort("MySQL Error: " . $con->error);
+
+		$fname = "inc/dbconfig"; 
+		$handle = fopen($fname, 'x');
+		$success = fwrite($handle, "$host\n$user\n$pass\n");
+		fclose($handle);
+
+		if (!$success)
+			abort("Could not write the config file. Check your permissions.");
 		?>
 		
 		<html>
