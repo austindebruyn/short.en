@@ -30,7 +30,7 @@
 				$pass = rtrim(fgets($handle), "\r\n");
 				fclose($handle);
 
-				$this->con = mysqli_connect($host, $user, $pass, 'shorten');
+				$this->con = new mysqli($host, $user, $pass, 'shorten');
 				if (mysqli_connect_errno())
 					abort("MySQL Error: " . mysqli_connect_error());
 				else
@@ -44,11 +44,26 @@
 		}
 
 		public function countEntries() {
+			$sql = "SELECT COUNT(`alias`) FROM `links`";
+			$result = $this->con->query($sql);
+			if(!$result)
+  				abort("MySQL Error: ".$this->con->error);
 
+			return $result->fetch_object();
 		}
 
 		public function addAlias($alias, $href) {
+			if (strlen($alias) < 2 || strlen($href) < 2)
+				return false;
 
+			$sql = "INSERT INTO `links` (alias, href) VALUES ('$alias', '$href')";
+			$result = $this->con->query($sql);
+			if(!$result) {
+  				abort("MySQL Error: ".$this->con->error);
+  				return false;
+  			}
+
+			return true;
 		}
 
 		public function fetchAlias($alias) {
@@ -56,7 +71,7 @@
 		}
 
 		public function clearDatabase() {
-
+			
 		}
 	}
 
