@@ -39,7 +39,7 @@
 		function testFetchAlias() {
 			global $db;
 			$result = $db->fetchAlias("test1");
-			$this->assertTrue($result == "http://1");
+			$this->assertEqual($result, "http://1");
 		}
 		
 		function cleanupDatabase() {

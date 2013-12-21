@@ -49,7 +49,8 @@
 			if(!$result)
   				abort("MySQL Error: ".$this->con->error);
 
-			return $result->fetch_object();
+  			$row = $result->fetch_row();
+			return $row[0];
 		}
 
 		public function addAlias($alias, $href) {
@@ -89,11 +90,11 @@
   				return false;
   			}
 
-  			if ($result->num_rows > 0){
+  			if ($result->num_rows < 1){
   				return false;
   			}
 
-  			$row = $result->fetch_row(MYSQL_NUM);
+  			$row = $result->fetch_row();
   			return $row[1];
 		}
 
