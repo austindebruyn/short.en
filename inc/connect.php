@@ -56,6 +56,18 @@
 			if (strlen($alias) < 2 || strlen($href) < 2)
 				return false;
 
+			//Make sure this alias doesn't already exist in the table
+			$sql = "SELECT * FROM `links` WHERE `alias`='$alias'";
+			$result = $this->con->query($sql);
+			if(!$result) {
+  				abort("MySQL Error: ".$this->con->error);
+  				return false;
+  			}
+  			if ($result->num_rows > 0){
+  				return false;
+  			}
+
+			//Insert and error check
 			$sql = "INSERT INTO `links` (alias, href) VALUES ('$alias', '$href')";
 			$result = $this->con->query($sql);
 			if(!$result) {
@@ -67,11 +79,33 @@
 		}
 
 		public function fetchAlias($alias) {
+			if (strlen($alias) < 2)
+				return false;
 
+			$sql = "SELECT alias, href FROM `links` WHERE `alias`='$alias' AND `valid`=1";
+			$result = $this->con->query($sql);
+			if(!$result) {
+  				abort("MySQL Error: ".$this->con->error);
+  				return false;
+  			}
+
+  			if ($result->num_rows > 0){
+  				return false;
+  			}
+
+  			$row = $result->fetch_row(MYSQL_NUM);
+  			return $row[1];
 		}
 
 		public function clearDatabase() {
-			
+			$sql = "DELETE FROM `links`";
+			$result = $this->con->query($sql);
+			if(!$result) {
+  				abort("MySQL Error: ".$this->con->error);
+  				return false;
+  			}
+
+			return true;			
 		}
 	}
 
